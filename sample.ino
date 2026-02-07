@@ -2,8 +2,18 @@
 int speedValue = 100; // actual speed = speedValue / 255.0 * max speed
 
 // define time constants
-#define MOVE_50CM_TIME 1200   // time used to move 50cm, find by experiment
-#define TURN_90_TIME   700    // time used to turn 90 degrees, find by experiment
+#define run_time 1200   // time used to go straight, find by experiment
+#define turn_time  700    // time used to turn 90 degrees, find by experiment
+#define stop_dist 15   // distance to obstacle to stop, in cm
+
+
+
+
+// ------- Do not touch below this line -------
+
+// pin numbers
+const int trigPin = 8;
+const int echoPin = 7;
 
 
 // define functions
@@ -46,33 +56,67 @@ void turnRight() {
   digitalWrite(10,LOW);
 }
 
+float getDistanceCM() {
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  long duration = pulseIn(echoPin, HIGH);
+  float distance = duration * 0.034 / 2;
+  return distance;
+}
+
+
 // setup pins
 void setup(){
+  // motors
   pinMode(5, OUTPUT);
   pinMode(6, OUTPUT);
   pinMode(9, OUTPUT);
   pinMode(10, OUTPUT);
+  // ultrasonic sensor
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
 }
+
+
+// ------- Do not touch above this line -------
+
 
 // main loop to run the car
 void loop(){
-
-  // 1. Go forward 50 cm
-  forward();
-  delay(MOVE_50CM_TIME);
+  // move forward
+  long startTime = millis();
+  while (millis() - startTime < run_time) {
+    float d = getDistanceCM();
+    if (d > 0 && d < stop_dist) {
+      stopCar();
+      while(true);   // stop forever if obstacle detected
+    }
+    forward();
+  }
   stopCar();
   delay(500);
 
-  // 2. Turn right 90 degrees
+  // turn right
   turnRight();
-  delay(TURN_90_TIME);
+  delay(turn_time;
   stopCar();
   delay(500);
 
-  // 3. Go forward another 50 cm
-  forward();
-  delay(MOVE_50CM_TIME);
-  stopCar();
+  // move forward
+  startTime = millis();
+  while (millis() - startTime < run_time) {
+    float d = getDistanceCM();
+    if (d > 0 && d < stop_dist) {
+      stopCar();
+      while(true);
+    }
+    forward();
+  }
 
-  while(true); // stop forever
+  stopCar();
+  while(true);
 }
+
