@@ -12,8 +12,8 @@ int speedValue = 100; // actual speed = speedValue / 255.0 * max speed
 // ------- Do not touch below this line -------
 
 // pin numbers
-const int trigPin = 8;
-const int echoPin = 7;
+const int trigPin = 12;
+const int echoPin = 13;
 
 
 // define functions
