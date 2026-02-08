@@ -1,11 +1,12 @@
+// you can change the values below base on your calculations
+
 // define speed
 int speedValue = 100; // actual speed = speedValue / 255.0 * max speed
 
 // define time constants
-#define run_time 1200   // time used to go straight, find by experiment
-#define turn_time  700    // time used to turn 90 degrees, find by experiment
-#define stop_dist 15   // distance to obstacle to stop, in cm
-
+#define run_time 5000   // time (in ms) used to go straight, find by experiment
+#define turn_time  1000    // time (in ms) used to turn 90 degrees, find by experiment
+#define stop_dist 10   // distance to obstacle to stop, in cm 
 
 
 
@@ -83,40 +84,73 @@ void setup(){
 
 // ------- Do not touch above this line -------
 
+// ------- change below --------
 
-// main loop to run the car
-void loop(){
+// What functions you have now:
+// forward(), backward(), stopCar(), turnLeft(), turnRight(), getDistanceCM()
+
+void loop() {
+
   // move forward
-  long startTime = millis();
-  while (millis() - startTime < run_time) {
-    float d = getDistanceCM();
-    if (d > 0 && d < stop_dist) {
-      stopCar();
-      while(true);   // stop forever if obstacle detected
-    }
-    forward();
+  unsigned long start = millis(); // record time stamp when robot starts moving forward
+  // while moving forward
+  while (millis() - start < run_time) {
+    // (replace here with your code)
   }
-  stopCar();
-  delay(500);
 
   // turn right
-  turnRight();
-  delay(turn_time;
-  stopCar();
-  delay(500);
+  // (replace here with your code)
 
-  // move forward
-  startTime = millis();
-  while (millis() - startTime < run_time) {
+
+  // stop car
+  stopCar();
+  while(true); // arduino has no 'exit', only way to stop is trap in this loop
+
+}
+
+
+
+// ------- sample answer --------
+void loop() {
+  // ---- move forward with continuous checking ----
+  unsigned long start = millis(); 
+  while (millis() - start < run_time) {
+    // detect obstacle
     float d = getDistanceCM();
-    if (d > 0 && d < stop_dist) {
+    if (d > 0 && d < 10) {
+      stopCar();
+      while(true); // stop forever
+    }
+    // move forward
+    forward();
+    delay(50); 
+  }
+  stopCar();
+  delay(200);
+
+  // ---- turn right (no checking during turn) ----
+  turnRight();
+  delay(turn_time);
+  stopCar();
+  delay(200);
+
+  // ---- move forward again with continuous checking ----
+  start = millis();
+  while (millis() - start < run_time) {
+    // detect obstacle
+    float d = getDistanceCM();
+    if (d > 0 && d < 10) {
       stopCar();
       while(true);
     }
+    // move forward
     forward();
+    delay(50);
   }
-
   stopCar();
-  while(true);
+
+  // end loop
+  while(true); // arduino has no 'exit', only way to stop is trap in this loop
 }
+
 
